@@ -1,5 +1,14 @@
 [versions]
+coil-compose = "2.3.0"
 com-android-application = "8.1.0-alpha10"
+hilt-android-compiler = "2.44"
+hilt-android = "2.44"
+kluent-android = "1.72"
+kluent = "1.72"
+kotlinx-coroutines-android = "1.6.4"
+kotlinx-coroutines-core = "1.6.1"
+mockk = "113.4"
+mockk-android = "1.13.4"
 org-jetbrains-kotlin-android = "1.8.0"
 core-ktx = "1.9.0"
 junit = "4.13.2"
@@ -7,18 +16,34 @@ androidx-test-ext-junit = "1.1.5"
 espresso-core = "3.5.1"
 appcompat = "1.6.1"
 material = "1.8.0"
-room-ktx = "2.2.6"
+retrofit = "2.9.0"
+room-ktx = "2.5.1"
 
 [libraries]
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "room-ktx" }
 androidx-room-ktx = { module = "androidx.room:room-ktx", version.ref = "room-ktx" }
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "room-ktx" }
+androidx-room-testing = { module = "androidx.room:room-testing", version.ref = "room-ktx" }
+coil = { module = "io.coil-kt:coil", version.ref = "coil-compose" }
+coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coil-compose" }
+converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "retrofit" }
 core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "core-ktx" }
+hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hilt-android-compiler" }
+hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt-android" }
+hilt-android-testing = { module = "com.google.dagger:hilt-android-testing", version.ref = "hilt-android-compiler" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-test-ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "androidx-test-ext-junit" }
 espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espresso-core" }
 appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+kluent-android = { module = "org.amshove.kluent:kluent-android", version.ref = "kluent-android" }
+kluent = { module = "org.amshove.kluent:kluent", version.ref = "kluent" }
+kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinx-coroutines-android" }
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines-core" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
+mockk-agent = { module = "io.mockk:mockk-agent", version.ref = "mockk-android" }
+mockk-android = { module = "io.mockk:mockk-android", version.ref = "mockk-android" }
+retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofit" }
 
 [plugins]
 com-android-application = { id = "com.android.application", version.ref = "com-android-application" }
