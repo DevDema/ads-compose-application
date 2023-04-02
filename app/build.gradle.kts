@@ -14,6 +14,14 @@ android {
     namespace = "com.example.adsapplication"
     compileSdk = 33
 
+    buildFeatures {
+        compose = true
+    }
+
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.4.2"
+    }
+
     defaultConfig {
         applicationId = "com.example.adsapplication"
         minSdk = 24
@@ -40,6 +48,25 @@ dependencies {
     implementation(libs.core.ktx)
     implementation(libs.appcompat)
     implementation(libs.material)
+
+    //
+    // COMPOSE
+    //
+
+    // Material Design 3
+    implementation(libs.androidx.material3)
+   // implementation(libs.androidx.material3.window.size.class)
+
+    // Android Studio Preview support
+    implementation(libs.androidx.ui.tooling.preview)
+    debugImplementation(libs.androidx.ui.tooling)
+
+    implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+
+    //
+    // UTILITIES
+    //
 
     // Room
 
@@ -73,9 +100,9 @@ dependencies {
     testImplementation(libs.androidx.room.testing)
 
     // for JVM:
-    testImplementation (libs.kluent)
+    testImplementation(libs.kluent)
     // for Android:
-    testImplementation (libs.kluent.android)
+    testImplementation(libs.kluent.android)
     // ...with Kotlin.
     kaptTest(libs.hilt.android.compiler)
     androidTestImplementation(libs.androidx.test.ext.junit)
