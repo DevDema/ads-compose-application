@@ -13,4 +13,5 @@ fun AdDTO.toAdvertisement() = Advertisement(
     score = score ?: 0.0,
     shippingLabel = shippingOption?.label.orEmpty(),
     url = url.orEmpty(),
+    isFavourite = false
 )

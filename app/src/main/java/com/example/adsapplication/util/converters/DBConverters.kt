@@ -13,4 +13,5 @@ fun FavouriteAd.toAdvertisement() = Advertisement(
     score = score,
     shippingLabel = shippingLabel,
     url = url,
+    isFavourite = true,
 )

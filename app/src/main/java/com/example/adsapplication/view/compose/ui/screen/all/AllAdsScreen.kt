@@ -21,7 +21,9 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material.pullrefresh.PullRefreshIndicator
 import androidx.compose.material.pullrefresh.pullRefresh
 import androidx.compose.material.pullrefresh.rememberPullRefreshState
@@ -211,33 +213,54 @@ private fun AdvertisementCard(advertisement: Advertisement) {
 
                 Spacer(modifier = Modifier.height(8.dp))
 
-                Text(
-                    text = buildString {
-                        advertisement.valuePrice
-                            ?.takeUnless { it == 0 }
-                            ?.let { valuePrice ->
-                                append(valuePrice.toReadable())
-
-                                advertisement.totalPrice
+                Row(
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.Bottom,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Column {
+                        Text(
+                            text = buildString {
+                                advertisement.valuePrice
                                     ?.takeUnless { it == 0 }
-                                    ?.let {
-                                        append(" / ${advertisement.totalPrice.toReadable()}")
-                                    }
+                                    ?.let { valuePrice ->
+                                        append(valuePrice.toReadable())
 
-                                append(" NOK")
-                            } ?: append(stringResource(R.string.free_item))
-                    },
-                    fontWeight = FontWeight.Bold
-                )
+                                        advertisement.totalPrice
+                                            ?.takeUnless { it == 0 }
+                                            ?.let {
+                                                append(" / ${advertisement.totalPrice.toReadable()}")
+                                            }
 
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(
-                    text = advertisement.location,
-                    fontSize = 13.sp,
-                    fontWeight = FontWeight.Light,
-                )
+                                        append(" NOK")
+                                    } ?: append(stringResource(R.string.free_item))
+                            },
+                            fontWeight = FontWeight.Bold
+                        )
+
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = advertisement.location,
+                            fontSize = 13.sp,
+                            fontWeight = FontWeight.Light,
+                        )
+                    }
+
+                    if (advertisement.isFavourite) {
+                        Icon(
+                            imageVector = Icons.Filled.FavoriteBorder,
+                            contentDescription = stringResource(R.string.remove_from_favourites)
+                        )
+                    } else {
+                        Icon(
+                            imageVector = Icons.Outlined.FavoriteBorder,
+                            contentDescription = stringResource(R.string.add_to_favourites)
+                        )
+                    }
+                }
             }
         }
+
     }
 }
 
@@ -257,6 +280,7 @@ fun AllAdsScreenPreview() = MaterialTheme {
                 score = 1.0,
                 shippingLabel = "Free shipping",
                 url = "",
+                isFavourite = true,
             ),
             Advertisement(
                 id = "id",
@@ -268,6 +292,7 @@ fun AllAdsScreenPreview() = MaterialTheme {
                 score = 1.0,
                 shippingLabel = "Free shipping",
                 url = "",
+                isFavourite = false,
             )
         ),
         onRefresh = {}

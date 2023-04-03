@@ -1,7 +1,5 @@
 package com.example.adsapplication.domain.model
 
-import com.example.adsapplication.data.api.model.Price
-
 class Advertisement(
     val id: String,
     val imageUrl: String,
@@ -12,4 +10,5 @@ class Advertisement(
     val score: Double,
     val shippingLabel: String,
     val url: String,
+    val isFavourite: Boolean,
 )
