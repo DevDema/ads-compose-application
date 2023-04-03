@@ -5,44 +5,46 @@ import androidx.room.Room
 import com.example.adsapplication.data.api.client.ads.AdsClient
 import com.example.adsapplication.data.api.client.ads.AdsService
 import com.example.adsapplication.data.api.client.ads.AdsServiceImpl
-import com.example.adsapplication.domain.datasource.api.AdsApiDataSourceImpl
 import com.example.adsapplication.data.database.AppDatabase
 import com.example.adsapplication.domain.datasource.api.AdsApiDataSource
+import com.example.adsapplication.domain.datasource.api.AdsApiDataSourceImpl
 import com.example.adsapplication.domain.datasource.cache.AdsCacheDataSource
 import com.example.adsapplication.domain.datasource.cache.AdsCacheDataSourceImpl
 import com.example.adsapplication.domain.repository.AdsRepository
 import com.example.adsapplication.domain.repository.AdsRepositoryImpl
-import dagger.Binds
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ActivityComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
+import dagger.hilt.components.SingletonComponent
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import javax.inject.Singleton
 
 @Module
-@InstallIn(ActivityComponent::class)
-abstract class AppModule {
+@InstallIn(SingletonComponent::class)
+class AppModule {
 
-    @Binds
-    abstract fun bindAdsApiDataSource(
-        dataSource: AdsApiDataSourceImpl
-    ): AdsApiDataSource
 
-    @Binds
-    abstract fun bindAdsCacheDataSource(
-        dataSource: AdsCacheDataSourceImpl
-    ): AdsCacheDataSource
-    @Binds
-    abstract fun bindAdsService(
-        service: AdsServiceImpl
-    ): AdsService
+    @Singleton
+    @Provides
+    fun provideAdsApiDataSource(service: AdsService): AdsApiDataSource =
+        AdsApiDataSourceImpl(service)
 
-    @Binds
-    abstract fun bindAdsRepository(
-        repository: AdsRepositoryImpl
-    ): AdsRepository
+    @Singleton
+    @Provides
+    fun provideAdsCacheDataSource(): AdsCacheDataSource = AdsCacheDataSourceImpl()
+
+    @Singleton
+    @Provides
+    fun provideAdsService(adsClient: AdsClient): AdsService = AdsServiceImpl(adsClient)
+
+    @Singleton
+    @Provides
+    fun provideAdsRepository(
+        apiDataSource: AdsApiDataSource,
+        cacheDataSource: AdsCacheDataSource,
+    ): AdsRepository = AdsRepositoryImpl(apiDataSource, cacheDataSource)
 
     companion object {
         @Provides
