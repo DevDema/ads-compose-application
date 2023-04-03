@@ -6,5 +6,7 @@
     <string name="loading_ads_error">There was a problem loading your ads, please check your connectivity</string>
     <string name="oh_no">Oh, no!</string>
     <string name="free_item">Free</string>
-    <string name="retrying_in">Retrying in %d seconds...</string>
+    <string name="retrying_in">Retrying in %d seconds…</string>
+    <string name="add_to_favourites">Add to favourites</string>
+    <string name="remove_from_favourites">Remove from favourites</string>
 </resources>

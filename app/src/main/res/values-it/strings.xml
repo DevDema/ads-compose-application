@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Ads Application</string>
+    <string name="ads_of_the_day">Annunci del giorno</string>
+    <string name="your_favourites">Preferiti</string>
+    <string name="warning">Attenzione</string>
+    <string name="loading_ads_error">È stato riscontrato un problema nel caricamento degli annunci.\nControllare la connessione di rete.</string>
+    <string name="oh_no">Oh, no!</string>
+    <string name="free_item">Gratis</string>
+    <string name="retrying_in">Prossimo tentativo fra %d secondi…</string>
+</resources>
