@@ -19,7 +19,7 @@ android {
     }
 
     composeOptions {
-        kotlinCompilerExtensionVersion = "1.4.2"
+        kotlinCompilerExtensionVersion = "1.4.4"
     }
 
     defaultConfig {
@@ -55,6 +55,7 @@ dependencies {
 
     // Material Design 3
     implementation(libs.androidx.material3)
+    implementation(libs.androidx.material)
    // implementation(libs.androidx.material3.window.size.class)
 
     // Android Studio Preview support
@@ -63,6 +64,13 @@ dependencies {
 
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
+
+    //
+    // NAVIGATION
+    //
+
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.accompanist.navigation.animation)
 
     //
     // UTILITIES
@@ -91,6 +99,7 @@ dependencies {
     // Hilt
     implementation(libs.hilt.android)
     kapt(libs.hilt.android.compiler)
+    implementation(libs.androidx.hilt.navigation.compose)
 
     kapt(libs.androidx.room.compiler)
     testImplementation(libs.mockk.android)
