@@ -10,4 +10,6 @@
     <string name="add_to_favourites">Add to favourites</string>
     <string name="remove_from_favourites">Remove from favourites</string>
     <string name="refresh">Refresh</string>
+    <string name="no_favourite_ads">This screen will show your favourites ads.\nAdd some first!</string>
+    <string name="remove">Remove</string>
 </resources>

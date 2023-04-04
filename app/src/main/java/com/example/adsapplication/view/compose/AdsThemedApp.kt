@@ -15,8 +15,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.navigation.NavOptions
+import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.navOptions
 import com.example.adsapplication.view.compose.ui.navigation.MainNavigation
 import com.example.adsapplication.view.compose.ui.screen.all.allAds
 import com.example.adsapplication.view.compose.ui.screen.all.navigateToAll
@@ -26,9 +27,18 @@ import com.example.adsapplication.view.compose.ui.screen.model.AdsAppDestination
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 
-private val bottomNavigationOptions: NavOptions = NavOptions.Builder()
-    .setRestoreState(true)
-    .build()
+val NavController.bottomNavOptions
+    get() = navOptions {
+        currentDestination?.let {
+            popUpTo(it.id) {
+                inclusive = true
+                saveState = true
+            }
+        }
+
+        launchSingleTop = true
+        restoreState = true
+    }
 
 @Composable
 fun AdsThemedApp() {
@@ -39,7 +49,7 @@ fun AdsThemedApp() {
         background = Color(0xFF5a595b)
     )
 
-    MaterialTheme(colorScheme = if(isSystemInDarkTheme()) darkColors else lightColors) {
+    MaterialTheme(colorScheme = if (isSystemInDarkTheme()) darkColors else lightColors) {
         Surface(Modifier.fillMaxSize()) {
             AppScreen()
         }
@@ -67,13 +77,10 @@ fun AppScreen() {
         MainNavigation(
             currentRoute = selectedItem?.destination?.route,
             onClickItem = { item ->
-                if(item.route == selectedItem?.destination?.route) {
-                    return@MainNavigation
-                }
 
-                when(item) {
-                    ALL -> navController.navigateToAll(bottomNavigationOptions)
-                    FAVOURITE -> navController.navigateToFavourites(bottomNavigationOptions)
+                when (item) {
+                    ALL -> navController.navigateToAll(navController.bottomNavOptions)
+                    FAVOURITE -> navController.navigateToFavourites(navController.bottomNavOptions)
                 }
             }
         )

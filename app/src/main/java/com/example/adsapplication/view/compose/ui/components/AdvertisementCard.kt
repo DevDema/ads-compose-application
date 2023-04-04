@@ -3,8 +3,10 @@
 package com.example.adsapplication.view.compose.ui.components
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -14,6 +16,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CornerBasedShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
@@ -37,16 +41,21 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.IntOffset
+import androidx.compose.ui.unit.IntSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.unit.toSize
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.adsapplication.R
@@ -62,10 +71,11 @@ fun AdvertisementCard(
     onRemoveFavourite: (() -> Unit)? = null,
 ) {
 
-    var sizePx by remember { mutableStateOf(1f) }
+    var sizePx by remember { mutableStateOf(Size(1f, 1f)) }
+    var sizeBehindPx by remember { mutableStateOf(IntSize.Zero) }
     val swipeableState = rememberSwipeableState(initialValue = 0)
     val anchors = mapOf(
-        0f to 0, sizePx to 1
+        0f to 0, sizePx.width to 1
     )
 
     onRemoveFavourite?.let { callback ->
@@ -76,91 +86,119 @@ fun AdvertisementCard(
         }
     }
 
-    Card(
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface,
-        ),
-        modifier = Modifier
-            .fillMaxWidth()
-            .then(
-                if (onRemoveFavourite != null)
-                    Modifier.swipeable(
-                        state = swipeableState,
-                        anchors = anchors,
-                        orientation = Orientation.Horizontal,
-                    )
-                else Modifier
-            )
-            .offset { IntOffset(swipeableState.offset.value.roundToInt(), 0) }
-            .onSizeChanged {
-                sizePx = it.width.toFloat()
-            },
-        onClick = {}
-    ) {
-        Row(
-            modifier = Modifier.padding(all = 18.dp),
-            horizontalArrangement = Arrangement.spacedBy(12.dp),
-            verticalAlignment = Alignment.CenterVertically
+    Box {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center,
+            modifier = Modifier
+                .offset { IntOffset((swipeableState.offset.value.roundToInt() - sizeBehindPx.width).coerceAtLeast(0), 0) }
+                .height(with(LocalDensity.current) { sizePx.height.toDp() })
+                .background(Color(0xFFEE0000), shape = RoundedCornerShape(topStart = 60f, bottomStart = 60f))
+                .onSizeChanged { sizeBehindPx = it }
         ) {
-            AsyncImage(
-                model = ImageRequest.Builder(LocalContext.current)
-                    .data("https://images.finncdn.no/dynamic/480x360c/${advertisement.imageUrl}")
-                    .diskCacheKey(advertisement.id)
-                    .build(),
-                contentDescription = advertisement.description,
-                contentScale = ContentScale.Crop,
+            Icon(
+                imageVector = Icons.Outlined.FavoriteBorder,
                 modifier = Modifier
-                    .width(100.dp)
-                    .aspectRatio(1f)
+                    .padding(horizontal = 16.dp),
+                tint = Color.White,
+                contentDescription = stringResource(R.string.remove_from_favourites)
             )
 
-            Column {
-                Text(
-                    text = advertisement.description,
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Text(
+                text = stringResource(R.string.remove),
+                color = Color.White,
+                modifier = Modifier
+                    .padding(horizontal = 16.dp),
+            )
+        }
+
+        Card(
+            colors = CardDefaults.cardColors(
+                containerColor = MaterialTheme.colorScheme.surface,
+            ),
+            modifier = Modifier
+                .fillMaxWidth()
+                .then(
+                    if (onRemoveFavourite != null)
+                        Modifier.swipeable(
+                            state = swipeableState,
+                            anchors = anchors,
+                            orientation = Orientation.Horizontal,
+                        )
+                    else Modifier
+                )
+                .offset { IntOffset(swipeableState.offset.value.roundToInt(), 0) }
+                .onSizeChanged {
+                    sizePx = it.toSize()
+                },
+            onClick = {}
+        ) {
+            Row(
+                modifier = Modifier.padding(all = 18.dp),
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                AsyncImage(
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data("https://images.finncdn.no/dynamic/480x360c/${advertisement.imageUrl}")
+                        .diskCacheKey(advertisement.id)
+                        .build(),
+                    contentDescription = advertisement.description,
+                    contentScale = ContentScale.Crop,
+                    modifier = Modifier
+                        .width(100.dp)
+                        .aspectRatio(1f)
                 )
 
-                Spacer(modifier = Modifier.height(8.dp))
+                Column {
+                    Text(
+                        text = advertisement.description,
+                    )
 
-                Row(
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.Bottom,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Column(Modifier.weight(1f)) {
-                        Text(
-                            text = buildString {
-                                advertisement.valuePrice
-                                    ?.takeUnless { it == 0 }
-                                    ?.let { valuePrice ->
-                                        append(valuePrice.toReadable())
+                    Spacer(modifier = Modifier.height(8.dp))
 
-                                        advertisement.totalPrice
-                                            ?.takeUnless { it == 0 }
-                                            ?.let {
-                                                append(" / ${advertisement.totalPrice.toReadable()}")
-                                            }
+                    Row(
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.Bottom,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Column(Modifier.weight(1f)) {
+                            Text(
+                                text = buildString {
+                                    advertisement.valuePrice
+                                        ?.takeUnless { it == 0 }
+                                        ?.let { valuePrice ->
+                                            append(valuePrice.toReadable())
 
-                                        append(" NOK")
-                                    } ?: append(stringResource(R.string.free_item))
-                            },
-                            fontWeight = FontWeight.Bold
-                        )
+                                            advertisement.totalPrice
+                                                ?.takeUnless { it == 0 }
+                                                ?.let {
+                                                    append(" / ${advertisement.totalPrice.toReadable()}")
+                                                }
 
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Text(
-                            text = advertisement.location,
-                            fontSize = 13.sp,
-                            fontWeight = FontWeight.Light,
-                        )
-                    }
+                                            append(" NOK")
+                                        } ?: append(stringResource(R.string.free_item))
+                                },
+                                fontWeight = FontWeight.Bold
+                            )
 
-                    if (showFavouriteIcon) {
-                        FavouriteIconButton(advertisement, onToggleFavourite)
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Text(
+                                text = advertisement.location,
+                                fontSize = 13.sp,
+                                fontWeight = FontWeight.Light,
+                            )
+                        }
+
+                        if (showFavouriteIcon) {
+                            FavouriteIconButton(advertisement, onToggleFavourite)
+                        }
                     }
                 }
             }
         }
-
     }
 }
 

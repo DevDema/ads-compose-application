@@ -8,4 +8,9 @@
     <string name="oh_no">Oh, no!</string>
     <string name="free_item">Gratis</string>
     <string name="retrying_in">Prossimo tentativo fra %d secondi…</string>
+    <string name="add_to_favourites">Aggiungi ai preferiti</string>
+    <string name="remove_from_favourites">Rimuovi dai preferiti</string>
+    <string name="refresh">Riprova</string>
+    <string name="no_favourite_ads">Questa pagina mostrerà i tuoi preferiti.\nAggiungine prima qualcuno!</string>
+    <string name="remove">Rimuovi</string>
 </resources>
