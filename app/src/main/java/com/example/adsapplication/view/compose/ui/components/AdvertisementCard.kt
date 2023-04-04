@@ -3,6 +3,8 @@
 package com.example.adsapplication.view.compose.ui.components
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.Arrangement
@@ -16,7 +18,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CornerBasedShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
@@ -40,10 +41,11 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.Bottom
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
@@ -61,6 +63,7 @@ import coil.request.ImageRequest
 import com.example.adsapplication.R
 import com.example.adsapplication.domain.model.Advertisement
 import com.example.adsapplication.util.converters.toReadable
+import kotlinx.coroutines.delay
 import kotlin.math.roundToInt
 
 @Composable
@@ -91,9 +94,18 @@ fun AdvertisementCard(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
             modifier = Modifier
-                .offset { IntOffset((swipeableState.offset.value.roundToInt() - sizeBehindPx.width).coerceAtLeast(0), 0) }
+                .offset {
+                    IntOffset(
+                        (swipeableState.offset.value.roundToInt() - sizeBehindPx.width).coerceAtLeast(
+                            0
+                        ), 0
+                    )
+                }
                 .height(with(LocalDensity.current) { sizePx.height.toDp() })
-                .background(Color(0xFFEE0000), shape = RoundedCornerShape(topStart = 60f, bottomStart = 60f))
+                .background(
+                    Color(0xFFEE0000),
+                    shape = RoundedCornerShape(topStart = 60f, bottomStart = 60f)
+                )
                 .onSizeChanged { sizeBehindPx = it }
         ) {
             Icon(
@@ -161,7 +173,7 @@ fun AdvertisementCard(
 
                     Row(
                         horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.Bottom,
+                        verticalAlignment = Bottom,
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Column(Modifier.weight(1f)) {
@@ -193,7 +205,11 @@ fun AdvertisementCard(
                         }
 
                         if (showFavouriteIcon) {
-                            FavouriteIconButton(advertisement, onToggleFavourite)
+                            var animateOnFavourite by remember { mutableStateOf(false) }
+                            FavouriteIconButton(advertisement, animateOnFavourite) {
+                                animateOnFavourite = true
+                                onToggleFavourite()
+                            }
                         }
                     }
                 }
@@ -205,26 +221,64 @@ fun AdvertisementCard(
 @Composable
 private fun FavouriteIconButton(
     advertisement: Advertisement,
+    animate: Boolean,
     onToggleFavourite: () -> Unit
 ) {
+    var scaleFactor by remember { mutableStateOf(1f) }
+    val scaleFactorState by animateFloatAsState(
+        scaleFactor,
+        animationSpec = tween(100),
+        label = "toggle_in_animation"
+    )
     if (advertisement.isFavourite) {
+
+        LaunchedEffect(Unit) {
+            if (animate) {
+                repeat(3) {
+                    scaleFactor = 1.2f
+                    delay(200)
+                    scaleFactor = 1f
+                    delay(200)
+                }
+            }
+        }
+
         TextButton(
             onClick = onToggleFavourite,
             colors = ButtonDefaults.textButtonColors(
                 contentColor = Color.Red,
-            )
+            ),
         ) {
             Icon(
                 imageVector = Icons.Filled.Favorite,
-                modifier = Modifier.align(Alignment.Bottom),
+                modifier = Modifier
+                    .align(Bottom)
+                    .graphicsLayer {
+                        scaleX = scaleFactor
+                        scaleY = scaleFactor
+                    },
                 contentDescription = stringResource(R.string.remove_from_favourites),
             )
         }
     } else {
         TextButton(onClick = onToggleFavourite) {
+
+            LaunchedEffect(Unit) {
+                if (animate) {
+                    scaleFactor = 0.8f
+                    delay(200)
+                    scaleFactor = 1f
+                    delay(200)
+                }
+            }
             Icon(
                 imageVector = Icons.Outlined.FavoriteBorder,
-                modifier = Modifier.align(Alignment.Bottom),
+                modifier = Modifier
+                    .align(Bottom)
+                    .graphicsLayer {
+                        scaleX = scaleFactorState
+                        scaleY = scaleFactorState
+                    },
                 contentDescription = stringResource(R.string.add_to_favourites)
             )
         }
