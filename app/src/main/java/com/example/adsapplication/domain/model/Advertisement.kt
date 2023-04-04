@@ -1,6 +1,6 @@
 package com.example.adsapplication.domain.model
 
-class Advertisement(
+data class Advertisement(
     val id: String,
     val imageUrl: String,
     val description: String,

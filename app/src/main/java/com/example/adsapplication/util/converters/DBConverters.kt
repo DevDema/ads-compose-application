@@ -15,3 +15,15 @@ fun FavouriteAd.toAdvertisement() = Advertisement(
     url = url,
     isFavourite = true,
 )
+
+fun Advertisement.toFavouriteDB() = FavouriteAd(
+    id = id,
+    imageUrl = imageUrl,
+    description = description,
+    location = location,
+    totalPrice = totalPrice,
+    valuePrice = valuePrice,
+    score = score,
+    shippingLabel = shippingLabel,
+    url = url,
+)

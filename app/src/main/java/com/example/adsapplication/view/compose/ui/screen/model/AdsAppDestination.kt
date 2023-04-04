@@ -10,14 +10,17 @@ import com.example.adsapplication.R
 
 enum class AdsAppDestination(
     @StringRes val titleResId: Int,
-    val imageVector: ImageVector
+    val imageVector: ImageVector,
+    val route: String
 ) {
     ALL(
         titleResId = R.string.ads_of_the_day,
         imageVector = Icons.Sharp.ShoppingCart,
+        route = "all_ads"
     ),
     FAVOURITE(
         titleResId = R.string.your_favourites,
         imageVector = Icons.Outlined.Favorite,
+        route = "favourite_ads"
     )
 }

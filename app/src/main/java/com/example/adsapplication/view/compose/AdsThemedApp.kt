@@ -12,10 +12,12 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.navigation.NavOptions
+import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.adsapplication.view.compose.ui.navigation.MainNavigation
-import com.example.adsapplication.view.compose.ui.screen.all.ALL_ADS_ROUTE
 import com.example.adsapplication.view.compose.ui.screen.all.allAds
 import com.example.adsapplication.view.compose.ui.screen.all.navigateToAll
 import com.example.adsapplication.view.compose.ui.screen.favourite.favouriteAds
@@ -24,13 +26,17 @@ import com.example.adsapplication.view.compose.ui.screen.model.AdsAppDestination
 import com.google.accompanist.navigation.animation.AnimatedNavHost
 import com.google.accompanist.navigation.animation.rememberAnimatedNavController
 
+private val bottomNavigationOptions: NavOptions = NavOptions.Builder()
+    .setRestoreState(true)
+    .build()
+
 @Composable
 fun AdsThemedApp() {
     val lightColors = lightColorScheme(
         background = Color(0xFFdcdcd8)
     )
     val darkColors = darkColorScheme(
-        background = Color(0x5a595b)
+        background = Color(0xFF5a595b)
     )
 
     MaterialTheme(colorScheme = if(isSystemInDarkTheme()) darkColors else lightColors) {
@@ -44,9 +50,11 @@ fun AdsThemedApp() {
 fun AppScreen() {
     Column(Modifier.fillMaxSize()) {
         val navController = rememberAnimatedNavController()
+        val selectedItem by navController.currentBackStackEntryAsState()
+
         AnimatedNavHost(
             navController = navController,
-            startDestination = ALL_ADS_ROUTE,
+            startDestination = ALL.route,
             modifier = Modifier
                 .fillMaxWidth()
                 .weight(1f)
@@ -55,11 +63,13 @@ fun AppScreen() {
 
             favouriteAds()
         }
+
         MainNavigation(
+            currentRoute = selectedItem?.destination?.route,
             onClickItem = { item ->
                 when(item) {
-                    ALL -> navController.navigateToAll()
-                    FAVOURITE -> navController.navigateToFavourites()
+                    ALL -> navController.navigateToAll(bottomNavigationOptions)
+                    FAVOURITE -> navController.navigateToFavourites(bottomNavigationOptions)
                 }
             }
         )

@@ -6,18 +6,15 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavOptions
-import com.example.adsapplication.view.compose.ui.screen.model.AdsAppDestination
+import com.example.adsapplication.view.compose.ui.screen.model.AdsAppDestination.FAVOURITE
 import com.google.accompanist.navigation.animation.composable
 
-private const val ROUTE = "favourite_ads"
-fun NavGraphBuilder.favouriteAds(): AdsAppDestination {
+fun NavGraphBuilder.favouriteAds() {
     composable(
-        route = ROUTE
+        route = FAVOURITE.route
     ) {
         FavouriteAdsScreen()
     }
-
-    return AdsAppDestination.FAVOURITE
 }
 
-fun NavController.navigateToFavourites(navOptions: NavOptions? = null) = navigate(ROUTE, navOptions)
+fun NavController.navigateToFavourites(navOptions: NavOptions? = null) = navigate(FAVOURITE.route, navOptions)
