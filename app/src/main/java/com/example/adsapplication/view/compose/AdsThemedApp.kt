@@ -67,6 +67,10 @@ fun AppScreen() {
         MainNavigation(
             currentRoute = selectedItem?.destination?.route,
             onClickItem = { item ->
+                if(item.route == selectedItem?.destination?.route) {
+                    return@MainNavigation
+                }
+
                 when(item) {
                     ALL -> navController.navigateToAll(bottomNavigationOptions)
                     FAVOURITE -> navController.navigateToFavourites(bottomNavigationOptions)
