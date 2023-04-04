@@ -6,7 +6,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface AdsRepository {
 
-    val favouritesFlow: Flow<List<FavouriteAd>>
+    val favouritesFlow: Flow<List<Advertisement>>
 
     suspend fun getAds(refresh: Boolean): Result<List<Advertisement>>
 

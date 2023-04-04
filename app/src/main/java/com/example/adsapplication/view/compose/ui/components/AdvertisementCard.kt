@@ -1,8 +1,9 @@
-@file:OptIn(ExperimentalMaterial3Api::class)
+@file:OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 
 package com.example.adsapplication.view.compose.ui.components
 
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -10,11 +11,15 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.outlined.FavoriteBorder
+import androidx.compose.material.rememberSwipeableState
+import androidx.compose.material.swipeable
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -24,18 +29,22 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.layout.onSizeChanged
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
@@ -43,18 +52,49 @@ import coil.request.ImageRequest
 import com.example.adsapplication.R
 import com.example.adsapplication.domain.model.Advertisement
 import com.example.adsapplication.util.converters.toReadable
+import kotlin.math.roundToInt
 
 @Composable
 fun AdvertisementCard(
     advertisement: Advertisement,
     onToggleFavourite: () -> Unit,
     showFavouriteIcon: Boolean,
+    onRemoveFavourite: (() -> Unit)? = null,
 ) {
+
+    var sizePx by remember { mutableStateOf(1f) }
+    val swipeableState = rememberSwipeableState(initialValue = 0)
+    val anchors = mapOf(
+        0f to 0, sizePx to 1
+    )
+
+    onRemoveFavourite?.let { callback ->
+        LaunchedEffect(swipeableState.currentValue) {
+            if (swipeableState.currentValue == 1) {
+                callback()
+            }
+        }
+    }
+
     Card(
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface,
         ),
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .then(
+                if (onRemoveFavourite != null)
+                    Modifier.swipeable(
+                        state = swipeableState,
+                        anchors = anchors,
+                        orientation = Orientation.Horizontal,
+                    )
+                else Modifier
+            )
+            .offset { IntOffset(swipeableState.offset.value.roundToInt(), 0) }
+            .onSizeChanged {
+                sizePx = it.width.toFloat()
+            },
         onClick = {}
     ) {
         Row(
@@ -114,7 +154,7 @@ fun AdvertisementCard(
                         )
                     }
 
-                    if(showFavouriteIcon) {
+                    if (showFavouriteIcon) {
                         FavouriteIconButton(advertisement, onToggleFavourite)
                     }
                 }
@@ -179,5 +219,6 @@ fun AdvertisementCardPreview() = MaterialTheme {
         advertisement = advertisement,
         onToggleFavourite = {},
         showFavouriteIcon = true,
-    )
+
+        )
 }

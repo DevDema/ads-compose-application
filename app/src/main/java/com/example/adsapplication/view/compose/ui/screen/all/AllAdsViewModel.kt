@@ -38,7 +38,7 @@ class AllAdsViewModel @Inject constructor(
                     advertisement.copy(
                         isFavourite = favouriteAds.any { it.id == advertisement.id }
                     )
-                }.sortedByDescending { it.score }
+                }
             }
         )
     }.stateIn(

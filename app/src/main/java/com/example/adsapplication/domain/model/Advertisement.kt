@@ -1,5 +1,9 @@
 package com.example.adsapplication.domain.model
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
 data class Advertisement(
     val id: String,
     val imageUrl: String,
@@ -11,4 +15,4 @@ data class Advertisement(
     val shippingLabel: String,
     val url: String,
     val isFavourite: Boolean,
-)
+): Parcelable
