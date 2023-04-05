@@ -2,7 +2,9 @@
 
 package com.example.adsapplication.view.compose.ui.components
 
+import android.content.Intent
 import android.content.res.Configuration.UI_MODE_NIGHT_YES
+import android.net.Uri
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
@@ -62,9 +64,11 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.adsapplication.R
 import com.example.adsapplication.domain.model.Advertisement
+import com.example.adsapplication.util.converters.AppConstants
 import com.example.adsapplication.util.converters.toReadable
 import kotlinx.coroutines.delay
 import kotlin.math.roundToInt
+
 
 @Composable
 fun AdvertisementCard(
@@ -73,7 +77,7 @@ fun AdvertisementCard(
     showFavouriteIcon: Boolean,
     onRemoveFavourite: (() -> Unit)? = null,
 ) {
-
+    val context = LocalContext.current
     var sizePx by remember { mutableStateOf(Size(1f, 1f)) }
     var sizeBehindPx by remember { mutableStateOf(IntSize.Zero) }
     val swipeableState = rememberSwipeableState(initialValue = 0)
@@ -145,7 +149,13 @@ fun AdvertisementCard(
                 .onSizeChanged {
                     sizePx = it.toSize()
                 },
-            onClick = {}
+            onClick = {
+                val browserIntent = Intent(
+                    Intent.ACTION_VIEW,
+                    Uri.parse("${AppConstants.LINKS_BASE_URL}${advertisement.url}")
+                )
+                context.startActivity(browserIntent)
+            }
         ) {
             Row(
                 modifier = Modifier.padding(all = 18.dp),
