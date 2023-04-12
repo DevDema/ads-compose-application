@@ -53,7 +53,6 @@ class AllAdsViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            isLoadingFlow.value = true
             loadWithBackoff()
         }
     }
@@ -61,14 +60,11 @@ class AllAdsViewModel @Inject constructor(
     private suspend fun loadWithBackoff() = withContext(Dispatchers.IO) {
         var attempts = 0
         do {
+            isLoadingFlow.value = true
             val result = loadAdvertisements()
 
             advertisementsFlow.emit(result)
-
-            if (result.isSuccess) {
-                isLoadingFlow.value = false
-                break
-            }
+            isLoadingFlow.value = false
 
             attempts++
 
