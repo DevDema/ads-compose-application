@@ -89,6 +89,7 @@ fun AdvertisementCard(
         LaunchedEffect(swipeableState.currentValue) {
             if (swipeableState.currentValue == 1) {
                 callback()
+                swipeableState.snapTo(0)
             }
         }
     }

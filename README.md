@@ -35,4 +35,5 @@ Some unit tests were developed at the early stages of the development of this ap
 
 There is currently a bug with the swiping gesture in favourites. 
 This bug needs proper investigation, but at first glance it looked like a bug in the Jetpack Compose related library.
-Feel free to suggest fixes or tips about this.
+
+WORKAROUND: snap the animation back when it is done.
